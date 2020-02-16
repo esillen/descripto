@@ -18,7 +18,7 @@ Team.prototype.sanitize = function(data) {
 
 Team.findById = function(id) {
   return new Promise((resolve, reject) => {
-    mongoClient.findById(COLLECTION_NAME, id, function(teamData) {
+    mongoClient.findById(COLLECTION_NAME, id).then(teamData => {
       resolve(new Team(teamData));
     });
   });
@@ -26,7 +26,7 @@ Team.findById = function(id) {
 
 Team.getAll = function() {
   return new Promise((resolve, reject) => {
-    mongoClient.getAll(COLLECTION_NAME, function(teamsDatas) {
+    mongoClient.getAll(COLLECTION_NAME).then(teamsDatas => {
       var teams = [];
       console.log(teamsDatas);
       teamsDatas.forEach(teamData => {
@@ -41,8 +41,9 @@ Team.prototype.save = function() {
   return new Promise((resolve, reject) => {
     var self = this;
     this.data = this.sanitize(this.data);
-    mongoClient.save(COLLECTION_NAME, self);
-    resolve();
+    mongoClient.save(COLLECTION_NAME, self).then(() => {
+      resolve();
+    });
   });
 };
 

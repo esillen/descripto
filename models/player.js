@@ -19,7 +19,7 @@ Player.prototype.sanitize = function(data) {
 Player.findById = function(id) {
   return new Promise((resolve, reject) => {
     console.log("find by id! " + id);
-    mongoClient.findById(COLLECTION_NAME, id, function(playerData) {
+    mongoClient.findById(COLLECTION_NAME, id).then(playerData => {
       resolve(new Player(playerData));
     });
   })
@@ -29,7 +29,7 @@ Player.addGameToPlayerById = function(playerId, gameId) {
   return new Promise((resolve, reject) => {
     Player.findById(playerId, (player) => {
       player.data.currentGames.push(gameId);
-      player.save(() => {
+      player.save().then(() => {
         resolve();
       })
     })
@@ -38,7 +38,7 @@ Player.addGameToPlayerById = function(playerId, gameId) {
 
 Player.getAll = function() {
   return new Promise((resolve, reject) => {
-    mongoClient.getAll(COLLECTION_NAME, function(playerDatas) {
+    mongoClient.getAll(COLLECTION_NAME).then(playerDatas => {
       var players = [];
       playerDatas.forEach(playerData => {
         players.push(new Player(playerData));
@@ -52,8 +52,9 @@ Player.prototype.save = function() {
   return new Promise((resolve, reject) => {
     var self = this;
     this.data = this.sanitize(this.data);
-    mongoClient.save(COLLECTION_NAME, self);
-    resolve();
+    mongoClient.save(COLLECTION_NAME, self).then(() => {
+      resolve();
+    });
   });
 };
 

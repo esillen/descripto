@@ -21,14 +21,17 @@ schemas = {
     teamCodes: [], // Codes in paintext
     turn: 0,
   },
-  game_log: {
+  gameLog: {
     teams: [
       {
-        turns: {
-          hints: [],
-          guesses: [],
-          theirGuesses: []
-        }
+        teamId : null,
+        turns: [
+          {
+            hints: [],
+            guesses: [],
+            theirGuesses: []
+          }
+        ]
       }
     ]
   }

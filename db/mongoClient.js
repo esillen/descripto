@@ -10,35 +10,51 @@ MongoClient.connect(url, function(err, database) {
 });
 
 client.insertOne = function(collectionName, data) {
-  this.databaseObject.collection(collectionName).insertOne(data, function(err, res) {
-    if (err) throw err;
-    console.log("inserted a document!");
+  return new Promise((resolve, reject) => {
+    this.databaseObject.collection(collectionName).insertOne(data, function(error, result) {
+      if (error) {
+        reject(error);
+      }
+      console.log("inserted a document!");
+      resolve(result);
+    });
   });
 }
 
 client.save = function(collectionName, data) {
-  this.databaseObject.collection(collectionName).save(data, function(err, res) {
-    if (err) throw err;
-    console.log("Saved object!!");
-    console.log(data);
+  return new Promise((resolve, reject) => {
+    this.databaseObject.collection(collectionName).save(data, function(error, result) {
+      if (error) {
+        reject(error);
+      }
+      console.log("Saved object!!");
+      resolve(result);
+    });
   });
 }
 
 client.getAll = function(collectionName, callback) {
-  this.databaseObject.collection(collectionName).find({}).toArray(function(err, result) {
-    if (err) throw err;
-    console.log("retrieved records!");
-    callback(result);
+  return new Promise((resolve, reject) => {
+    this.databaseObject.collection(collectionName).find({}).toArray(function(error, result) {
+      if (error) {
+        reject(error);
+      }
+      console.log("retrieved records!");
+      resolve(result);
+    });
   });
 }
 
 client.findById = function(collectionName, id, callback) {
-  this.databaseObject.collection(collectionName).findOne({'_id':ObjectID(id)}, function(err, result) {
-        if (err) throw err;
-        console.log("found something!")
-        console.log(result);
-        callback(result);
-     });
+  return new Promise((resolve, reject) => {
+    this.databaseObject.collection(collectionName).findOne({'_id':ObjectID(id)}, function(error, result) {
+      if (error) {
+        reject(error);
+      }
+      console.log("found something!")
+      resolve(result);
+    });
+  });
 }
 
 

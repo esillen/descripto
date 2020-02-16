@@ -16,28 +16,48 @@ GameLog.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
-GameLog.findById = function(id, callback) {
-  mongoClient.findById(COLLECTION_NAME, id, function(gameLogData) {
-    callback(new GameLog(gameLogData));
+GameLog.createNew = function(teams) {
+  var teamLogData = [];
+  teams.forEach(team => {
+    teamLogData.teamId = team;
+    teamLogData.turns = [];
   });
-};
+  var gameLogData = {};
+  gameLogData.teams = teamLogData;
+  var gameLog = new GameLog(gameLogData);
+  gameLog.data = gameLog.sanitize(gameLog.data);
+  return gameLog.save();
+}
 
-GameLog.getAll = function(callback) {
-  mongoClient.getAll(COLLECTION_NAME, function(gameLogsDatas) {
-    var gameLogs = [];
-    console.log(gameLogsDatas);
-    gameLogsDatas.forEach(gameLogData => {
-      gameLogs.push(new GameLog(gameLogData));
+GameLog.findById = function(id) {
+  return new Promise((resolve, reject) => {
+    mongoClient.findById(COLLECTION_NAME, id).then(gameLogData => {
+      resolve(new GameLog(gameLogData));
     });
-    callback(gameLogs);
   });
 };
 
-GameLog.prototype.save = function(callback) {
-  var self = this;
-  this.data = this.sanitize(this.data);
-  mongoClient.save(COLLECTION_NAME, self);
-  callback();
+GameLog.getAll = function() {
+  return new Promise((resolve, reject) => {
+    mongoClient.getAll(COLLECTION_NAME).then(gameLogsDatas => {
+      var gameLogs = [];
+      console.log(gameLogsDatas);
+      gameLogsDatas.forEach(gameLogData => {
+        gameLogs.push(new GameLog(gameLogData));
+      });
+      resolve(gameLogs);
+    });
+  });
+};
+
+GameLog.prototype.save = function() {
+  return new Promise((resolve, reject) => {
+    var self = this;
+    this.data = this.sanitize(this.data);
+    mongoClient.save(COLLECTION_NAME, self).then(createdData => {
+      resolve(createdData)
+    });
+  });
 };
 
 module.exports = GameLog;
