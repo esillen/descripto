@@ -16,28 +16,34 @@ Team.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
-Team.findById = function(id, callback) {
-  mongoClient.findById(COLLECTION_NAME, id, function(teamData) {
-    callback(new Team(teamData));
-  });
-};
-
-Team.getAll = function(callback) {
-  mongoClient.getAll(COLLECTION_NAME, function(teamsDatas) {
-    var teams = [];
-    console.log(teamsDatas);
-    teamsDatas.forEach(teamData => {
-      teams.push(new Team(teamData));
+Team.findById = function(id) {
+  return new Promise((resolve, reject) => {
+    mongoClient.findById(COLLECTION_NAME, id, function(teamData) {
+      resolve(new Team(teamData));
     });
-    callback(teams);
   });
 };
 
-Team.prototype.save = function(callback) {
-  var self = this;
-  this.data = this.sanitize(this.data);
-  mongoClient.save(COLLECTION_NAME, self);
-  callback();
+Team.getAll = function() {
+  return new Promise((resolve, reject) => {
+    mongoClient.getAll(COLLECTION_NAME, function(teamsDatas) {
+      var teams = [];
+      console.log(teamsDatas);
+      teamsDatas.forEach(teamData => {
+        teams.push(new Team(teamData));
+      });
+      resolve(teams);
+    });
+  });
+};
+
+Team.prototype.save = function() {
+  return new Promise((resolve, reject) => {
+    var self = this;
+    this.data = this.sanitize(this.data);
+    mongoClient.save(COLLECTION_NAME, self);
+    resolve();
+  });
 };
 
 module.exports = Team;

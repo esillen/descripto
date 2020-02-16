@@ -19,7 +19,7 @@ router.get("/:id", function(req, res, next) {
 router.post("/", function(req, res) {
   console.log("About to add a new player! data: " + req.body);
   var newPlayer = new Player(req.body);
-  newPlayer.save.then(() => {
+  newPlayer.save().then(() => {
     res.send("Added the player!");
   });
 });

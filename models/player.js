@@ -25,7 +25,7 @@ Player.findById = function(id) {
   })
 };
 
-Player.addGameToPlayerById = function(playerId, gameId, callback) {
+Player.addGameToPlayerById = function(playerId, gameId) {
   return new Promise((resolve, reject) => {
     Player.findById(playerId, (player) => {
       player.data.currentGames.push(gameId);

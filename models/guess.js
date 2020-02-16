@@ -4,6 +4,9 @@ var Game = require('./game');
 
 var Guess = function(data) {
   this.data = data;
+  if (!this.data.guesses) {
+    this.data.guesses = {}; // TODO: Idk if I need this.
+  }
 };
 
 Guess.prototype.data = {};

@@ -16,28 +16,34 @@ Game.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
-Game.findById = function(id, callback) {
-  mongoClient.findById(COLLECTION_NAME, id, function(gameData) {
-    callback(new Game(gameData.data));
-  });
-};
-
-Game.getAll = function(callback) {
-  mongoClient.getAll(COLLECTION_NAME, function(gamesDatas) {
-    var games = [];
-    console.log(gamesDatas);
-    gamesDatas.forEach(gameData => {
-      games.push(new Game(gameData));
+Game.findById = function(id) {
+  return new Promise((resolve, reject) => {
+    mongoClient.findById(COLLECTION_NAME, id, function(gameData) {
+      resolve(new Game(gameData.data));
     });
-    callback(games);
   });
 };
 
-Game.prototype.save = function(callback) {
-  var self = this;
-  this.data = this.sanitize(this.data);
-  mongoClient.save(COLLECTION_NAME, self);
-  callback();
+Game.getAll = function() {
+  return new Promise((resolve, reject) => {
+    mongoClient.getAll(COLLECTION_NAME, function(gamesDatas) {
+      var games = [];
+      console.log(gamesDatas);
+      gamesDatas.forEach(gameData => {
+        games.push(new Game(gameData));
+      });
+      resolve(games);
+    });
+  });
+};
+
+Game.prototype.save = function() {
+  return new Promise((resolve, reject) => {
+    var self = this;
+    this.data = this.sanitize(this.data);
+    mongoClient.save(COLLECTION_NAME, self);
+    resolve();
+  });
 };
 
 module.exports = Game;

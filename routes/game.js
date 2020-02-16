@@ -3,11 +3,50 @@ var router = express.Router();
 var Game = require("../models/game");
 var Team = require("../models/team");
 var Guess = require("../models/guess");
+var Validator = require("../util/validator");
+var RandomUtils = require("../util/randomUtils");
+var Player = require("../models/player");
+var WORDS = require("../data/words.json");
 
 router.get("/", function(req, res, next) {
-  Game.getAll(games => {
+  Game.getAll().then(games => {
     res.send(games);
   });
+});
+
+// Creates a game with players
+// { numWords: 4, teams: [ { playerIds: [playerId, teamId2...] }] }
+router.post("/createNew", function(req, res, next) {
+  var teams = req.body.teams;
+  var numWords = req.body.numWords;
+  // Make sure all players are unique
+  if (Validator.unformedTeamsDoNotContainSamePlayers() && req.body.numWords) {
+    // Create teams
+    var counter = 0;
+    var playerIds = [];
+    var shuffledWords = RandomUtils.shuffle(WORDS);
+    for (var i = 0; i < teams.length; i++) {
+      var teamData = {}
+      teamData.words = shuffledWords.slice(i*numWords, i*numWords+numWords);
+      teamData.players = teams[i].playerIds;
+      var newTeam = new Team(teamData);
+      newTeam.save(() => {
+        teamData.players.playerIds.forEach(playerId => {
+          playerIds.push(playerId);
+        });
+        counter++;
+        if (counter == teams.length) {
+          // Add game to players
+          counter = 0;
+          playerIds.forEach(playerId => 
+            Player.addGameToPlayerById(playerId, )
+          )
+        }
+      });
+    }
+  } else {
+    res.send("Two Players have the same id :(");
+  }
 });
 
 router.get("/:gameid", function(req, res, next) {

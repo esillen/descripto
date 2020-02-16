@@ -1,6 +1,7 @@
 schemas = {
   player: {
     name: null,
+    currentGames: [],
   },
   guess: {
     code: null,
@@ -12,6 +13,7 @@ schemas = {
     failPoints: 0,
     players: [],
     cryptographer: null,
+    guesses: {}, // Key-value store with teamId: guess
   },
   game: {
     teams: [], //List of team ids
