@@ -2,32 +2,31 @@ schemas = {
   player: {
     name: null,
   },
+  guess: {
+    code: null,
+    turn: 0,
+  },
   team: {
     words: [],
-    guess_points: 0,
-    fail_points: 0,
+    guessPoints: 0,
+    failPoints: 0,
     players: [],
     cryptographer: null,
   },
   game: {
-    team1: null,
-    team2: null,
+    teams: [], //List of team ids
+    teamLogs: [], // List of log ids
+    teamCodes: [], // Codes in paintext
     turn: 0,
-    log: null,
-    code1: null,
-    code2: null,
   },
-  gameLog: {
-    turns: [
+  game_log: {
+    teams: [
       {
-        team: null,
-        entries : [
-          {
-            clue: null,
-            guess: 0,
-            correct: 0
-          }
-        ]
+        turns: {
+          hints: [],
+          guesses: [],
+          theirGuesses: []
+        }
       }
     ]
   }

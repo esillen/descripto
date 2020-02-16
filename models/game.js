@@ -16,13 +16,9 @@ Game.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
-Game.prototype.changeName = function(data) {
-  this.data = this.sanitize(data);
-};
-
 Game.findById = function(id, callback) {
   mongoClient.findById(COLLECTION_NAME, id, function(gameData) {
-    callback(new Game(gameData));
+    callback(new Game(gameData.data));
   });
 };
 

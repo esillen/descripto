@@ -16,10 +16,6 @@ Player.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
-Player.prototype.changeName = function(data) {
-  this.data = this.sanitize(data);
-};
-
 Player.findById = function(id, callback) {
   console.log("find by id! " + id);
   mongoClient.findById(COLLECTION_NAME, id, function(playerData) {

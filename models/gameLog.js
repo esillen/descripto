@@ -16,10 +16,6 @@ GameLog.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
-GameLog.prototype.changeName = function(data) {
-  this.data = this.sanitize(data);
-};
-
 GameLog.findById = function(id, callback) {
   mongoClient.findById(COLLECTION_NAME, id, function(gameLogData) {
     callback(new GameLog(gameLogData));

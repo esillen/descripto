@@ -16,10 +16,6 @@ Team.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
-Team.prototype.changeName = function(data) {
-  this.data = this.sanitize(data);
-};
-
 Team.findById = function(id, callback) {
   mongoClient.findById(COLLECTION_NAME, id, function(teamData) {
     callback(new Team(teamData));
