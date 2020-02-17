@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  a(href='google.com') Google
+  
+  ul
+    each player in players
+      li: a(href="/play/" + player._id) #{player.data.name}

@@ -47,6 +47,14 @@ GameLog.findById = function(id) {
   });
 };
 
+GameLog.findSomeById = function(gameLogIds) {
+  const getGameLogPromises = [];
+  for (const gameLogId of gameLogIds) {
+    getGameLogPromises.push(GameLog.findById(gameLogId));
+  }
+  return Promise.all(getGameLogPromises)
+}
+
 GameLog.getAll = function() {
   return new Promise((resolve, reject) => {
     mongoClient.getAll(COLLECTION_NAME).then(gameLogsDatas => {

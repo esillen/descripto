@@ -27,6 +27,29 @@ Team.findById = function(id) {
   });
 };
 
+Team.findAmongIdsByPlayerId = function(teamIds, playerId) {
+  return new Promise((resolve, reject) => {
+    const getTeamPromises = [];
+    for (const teamId of teamIds) {
+      getTeamPromises.push(Team.findById(teamId));
+    }
+    Promise.all(getTeamPromises).then(teams => {
+      let found = null;
+      for(const team of teams) {
+        if (team.data.players.indexOf(playerId.toString()) != -1) {
+          found = team;
+          break; // TODO: if I'm better at javascript this would probably look neater.
+        }
+      }
+      if(found) {
+        resolve(found);
+      } else {
+        reject("No team found");
+      }
+    });
+  });
+}
+
 Team.getAll = function() {
   return new Promise((resolve, reject) => {
     mongoClient.getAll(COLLECTION_NAME).then(teamsDatas => {

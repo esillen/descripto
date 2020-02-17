@@ -9,8 +9,11 @@ var GameLog = require('./gameLog');
 
 var COLLECTION_NAME = "Games";
 
-var Game = function(data) {
+var Game = function(data, _id) {
   this.data = data;
+  if (_id) {
+    this._id = _id;
+  }
 };
 
 Game.prototype.data = {};
@@ -42,7 +45,7 @@ Game.createNew = function(teamIds, logIds) {
 Game.findById = function(id) {
   return new Promise((resolve, reject) => {
     mongoClient.findById(COLLECTION_NAME, id).then(gameData => {
-      resolve(new Game(gameData.data));
+      resolve(new Game(gameData.data, gameData._id));
     });
   });
 };
@@ -53,7 +56,7 @@ Game.getAll = function() {
       var games = [];
       console.log(gamesDatas);
       gamesDatas.forEach(gameData => {
-        games.push(new Game(gameData));
+        games.push(new Game(gameData.data, gameData._id));
       });
       resolve(games);
     });
