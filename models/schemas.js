@@ -9,8 +9,9 @@ schemas = {
   },
   team: {
     words: [],
-    guessPoints: 0,
-    failPoints: 0,
+    guessPoints: 0, // good
+    otherGuessesPoints: 0, // bad
+    failPoints: 0, // bad
     players: [],
     cryptographer: null,
     guesses: {}, // Key-value store with teamId: guess
@@ -28,8 +29,9 @@ schemas = {
         turns: [
           {
             hints: [],
-            guesses: [],
-            theirGuesses: []
+            guess: null,
+            theirGuess: null,
+            correct: null,
           }
         ]
       }

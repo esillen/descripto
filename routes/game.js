@@ -26,17 +26,19 @@ router.post("/createNew", function(req, res, next) {
     var shuffledWords = RandomUtils.shuffle(WORDS);
     var players = [];
     var teamPromises = [];
-    var logPromises = [];
     for (var i = 0; i < teams.length; i++) {
       teamPromises.push(Team.createNew(
           teams[i].playerIds, 
           shuffledWords.slice(i*numWords, i*numWords+numWords)));
-      logPromises.push(GameLog.createNew(teams));
       teams[i].playerIds.forEach(playerId => {
         players.push(playerId); // Players are saved for later when we add the gameid to the players.
       });
     }
     Promise.all(teamPromises).then(teamIds => {
+      const logPromises = [];
+      for (const teamId of teamIds) {
+        logPromises.push(GameLog.createNew(teamIds));
+      }
       Promise.all(logPromises).then(teamLogIds => {
         Game.createNew(teamIds, teamLogIds).then(newGameId => {
           var playerPromises = [];
