@@ -52,8 +52,6 @@ router.post("/createNew", function(req, res, next) {
   }
 });
 
-
-
 router.get("/:gameid", function(req, res, next) {
   Game.findById(req.params.gameid).then(game => {
     res.send(game);
@@ -72,16 +70,16 @@ router.post("/:gameid/teamguess/:teamid", (req, res) => {
   console.log("Guessed on own team. data: ");
   console.log(req.body);
   var guess = new Guess(req.body);
+  guess.data = guess.sanitize(guess.data); // TODO: Can't this be done inside the class?
   Game.findById(req.params.gameid).then(game => {
-    guess.data = guess.sanitize(guess.data); // Can't this be done inside the class?
     if (guess.data.turn == game.data.turn) {
-      var teamIndex = game.data.teams.indexOf(req.params.teamid);
-      var code = game.data.teamCodes[teamIndex];
-      if (code == guess.data.code) {
-        res.send("CORRECT!!!");
-      } else {
-        res.send("Guess was incorrect!");
-      }
+      Team.findById(req.params.teamid).then(team => {
+        team.data.guesses[req.params.teamid] = guess.data.code;
+        team.save().then(() => {
+          game.checkForTurnEndAndUpdate();
+          res.send("Guess was submitted");
+        });
+      });
     } else {
       res.send("Guess was submitted for the wrong turn");
     }
@@ -89,19 +87,19 @@ router.post("/:gameid/teamguess/:teamid", (req, res) => {
 });
 
 router.post("/:gameid/otherteamguess/:teamid/:otherteamid", (req, res) => {
-  console.log("Guessed on the other team. data: ");
+  console.log("Guessed on other team. data: ");
   console.log(req.body);
   var guess = new Guess(req.body);
+  guess.data = guess.sanitize(guess.data); // TODO: Can't this be done inside the class?
   Game.findById(req.params.gameid).then(game => {
-    guess.data = guess.sanitize(guess.data); // Can't this be done inside the class?
     if (guess.data.turn == game.data.turn) {
-      var teamIndex = game.data.teams.indexOf(req.params.otherteamid);
-      var code = game.data.teamCodes[teamIndex];
-      if (code == guess.data.code) {
-        res.send("CORRECT!!!");
-      } else {
-        res.send("Guess was incorrect!");
-      }
+      Team.findById(req.params.teamid).then(team => {
+        team.data.guesses[req.params.otherteamid] = guess.data.code;
+        team.save().then(() => {
+          game.checkForTurnEndAndUpdate();
+          res.send("Guess was submitted");
+        });
+      });
     } else {
       res.send("Guess was submitted for the wrong turn");
     }

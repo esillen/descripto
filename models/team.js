@@ -4,8 +4,11 @@ var _ = require("lodash");
 
 var COLLECTION_NAME = "Teams";
 
-var Team = function(data) {
+var Team = function(data, _id) {
   this.data = data;
+  if (_id) {
+    this._id = _id;
+  }
 };
 
 Team.prototype.data = {};
@@ -19,7 +22,7 @@ Team.prototype.sanitize = function(data) {
 Team.findById = function(id) {
   return new Promise((resolve, reject) => {
     mongoClient.findById(COLLECTION_NAME, id).then(teamData => {
-      resolve(new Team(teamData));
+      resolve(new Team(teamData.data, teamData._id));
     });
   });
 };
@@ -30,7 +33,7 @@ Team.getAll = function() {
       var teams = [];
       console.log(teamsDatas);
       teamsDatas.forEach(teamData => {
-        teams.push(new Team(teamData));
+        teams.push(new Team(teamData.data, teamData._id));
       });
       resolve(teams);
     });

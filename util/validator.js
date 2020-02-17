@@ -2,7 +2,7 @@ var Validator = {};
 
 // Checks if all teams has guesses
 Validator.allGuessesCollected = function(teams) {
-  teams.forEach(team => {
+  for (const team of teams) {
     var teamGuessesTeamIds = Object.keys(team.data.guesses);
     if (teamGuessesTeamIds.length != teams.length) {
       return false;
@@ -11,8 +11,8 @@ Validator.allGuessesCollected = function(teams) {
       if (!team.data.guesses[guessTeamId]) {
         return false;
       }
-    })
-  });
+    });
+  };
   return true;
 }
 

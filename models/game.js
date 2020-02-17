@@ -2,6 +2,8 @@ var mongoClient = require("../db/mongoClient");
 var schemas = require("./schemas.js");
 var _ = require("lodash");
 var CodeGenerator = require("../util/codeGenerator");
+var Validator = require("../util/validator");
+var Team = require('./team');
 
 
 var COLLECTION_NAME = "Games";
@@ -57,10 +59,23 @@ Game.getAll = function() {
   });
 };
 
+Game.prototype.checkForTurnEndAndUpdate = function() {
+  var teamPromises = [];
+  this.data.teams.forEach(team => {
+    teamPromises.push(Team.findById(team));
+  });
+  Promise.all(teamPromises).then(teams => {
+    if (Validator.allGuessesCollected(teams)) {
+      console.log("Time for new round");
+      return; // Do new round magic.
+    }
+  })
+}
+
 Game.prototype.newTurn = function() {
-  gameData.turn = 1;
-  gameData.teamCodes = [];
-  gameData.teams.forEach(team => {
+  this.data.turn = gameData.turn + 1;
+  this.data.teamCodes = [];
+  this.data.teams.forEach(team => {
     gameData.teamCodes.push(CodeGenerator.generateRandomCode());
   });
   return this.save();
