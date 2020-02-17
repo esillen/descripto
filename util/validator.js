@@ -29,6 +29,7 @@ Validator.unformedTeamsDoNotContainSamePlayers = function(unformedTeams) {
       }
     });
   });
+  return true;
 }
 
 

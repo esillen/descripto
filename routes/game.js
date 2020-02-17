@@ -21,29 +21,41 @@ router.post("/createNew", function(req, res, next) {
   var teams = req.body.teams;
   var numWords = req.body.numWords;
   // Make sure all players are unique
-  if (Validator.unformedTeamsDoNotContainSamePlayers() && req.body.numWords) {
+  if (Validator.unformedTeamsDoNotContainSamePlayers(teams) && req.body.numWords) {
     // Create teams
     var shuffledWords = RandomUtils.shuffle(WORDS);
     var players = [];
-    var promises = []
+    var teamPromises = [];
+    var logPromises = [];
     for (var i = 0; i < teams.length; i++) {
-      var teamData = {}
-      teamData.words = shuffledWords.slice(i*numWords, i*numWords+numWords);
-      teamData.players = teams[i].playerIds;
-      var newTeam = new Team(teamData);
-      promises.push(newTeam.save());
-      teamData.players.forEach(playerId => {
-        players.push(playerId);
+      teamPromises.push(Team.createNew(
+          teams[i].playerIds, 
+          shuffledWords.slice(i*numWords, i*numWords+numWords)));
+      logPromises.push(GameLog.createNew(teams));
+      teams[i].playerIds.forEach(playerId => {
+        players.push(playerId); // Players are saved for later when we add the gameid to the players.
       });
-      promises.push(GameLog.createNew(teams));
     }
+    Promise.all(teamPromises).then(teamIds => {
+      Promise.all(logPromises).then(teamLogIds => {
+        Game.createNew(teamIds, teamLogIds).then(newGameId => {
+          var playerPromises = [];
+          players.forEach(playerId => {
+            playerPromises.push(Player.addGameToPlayerById(playerId, newGameId));
+          });
+          Promise.all(playerPromises).then(() => {
+            res.send("OMG CREATED A NEW GAME!! Id:" + newGameId);
+          });
+        });
+      });
+    });
   }
 });
 
 
 
 router.get("/:gameid", function(req, res, next) {
-  Game.findById(req.params.gameid, (game) => {
+  Game.findById(req.params.gameid).then(game => {
     res.send(game);
   });
 });
@@ -51,7 +63,7 @@ router.get("/:gameid", function(req, res, next) {
 router.post("/", function(req, res) {
   console.log("About to add a new game! data: " + req.body);
   var newGame = new Game(req.body);
-  newGame.save(() => {
+  newGame.save().then(() => {
     res.send("Added the game!");
   });
 });
@@ -60,7 +72,7 @@ router.post("/:gameid/teamguess/:teamid", (req, res) => {
   console.log("Guessed on own team. data: ");
   console.log(req.body);
   var guess = new Guess(req.body);
-  Game.findById(req.params.gameid, (game) => {
+  Game.findById(req.params.gameid).then(game => {
     guess.data = guess.sanitize(guess.data); // Can't this be done inside the class?
     if (guess.data.turn == game.data.turn) {
       var teamIndex = game.data.teams.indexOf(req.params.teamid);
@@ -80,7 +92,7 @@ router.post("/:gameid/otherteamguess/:teamid/:otherteamid", (req, res) => {
   console.log("Guessed on the other team. data: ");
   console.log(req.body);
   var guess = new Guess(req.body);
-  Game.findById(req.params.gameid, (game) => {
+  Game.findById(req.params.gameid).then(game => {
     guess.data = guess.sanitize(guess.data); // Can't this be done inside the class?
     if (guess.data.turn == game.data.turn) {
       var teamIndex = game.data.teams.indexOf(req.params.otherteamid);

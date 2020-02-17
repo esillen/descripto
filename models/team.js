@@ -37,12 +37,25 @@ Team.getAll = function() {
   });
 };
 
+// Returns the created teams' id
+Team.createNew = function(teamMembersPlayerIds, words) {
+  return new Promise((resolve, reject) => {
+    var teamData = {};
+    teamData.players = teamMembersPlayerIds;
+    teamData.words = words;
+    var newTeam = new Team(teamData);
+    newTeam.save().then(saveData => {
+      resolve(saveData._id.toString());
+    })
+  });
+}
+
 Team.prototype.save = function() {
   return new Promise((resolve, reject) => {
     var self = this;
     this.data = this.sanitize(this.data);
-    mongoClient.save(COLLECTION_NAME, self).then(() => {
-      resolve();
+    mongoClient.save(COLLECTION_NAME, self).then((data) => {
+      resolve(data);
     });
   });
 };

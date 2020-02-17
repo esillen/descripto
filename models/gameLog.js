@@ -16,17 +16,22 @@ GameLog.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
+// Returns an id with the newly created gamelog
 GameLog.createNew = function(teams) {
-  var teamLogData = [];
-  teams.forEach(team => {
-    teamLogData.teamId = team;
-    teamLogData.turns = [];
+  return new Promise((resolve, reject) => {
+    var teamLogData = [];
+    teams.forEach(team => {
+      teamLogData.teamId = team;
+      teamLogData.turns = [];
+    });
+    var gameLogData = {};
+    gameLogData.teams = teamLogData;
+    var gameLog = new GameLog(gameLogData);
+    gameLog.data = gameLog.sanitize(gameLog.data);
+    gameLog.save().then(gameLogSaveData => {
+      resolve(gameLogSaveData._id.toString());
+    });
   });
-  var gameLogData = {};
-  gameLogData.teams = teamLogData;
-  var gameLog = new GameLog(gameLogData);
-  gameLog.data = gameLog.sanitize(gameLog.data);
-  return gameLog.save();
 }
 
 GameLog.findById = function(id) {

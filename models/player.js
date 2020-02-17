@@ -4,8 +4,11 @@ var _ = require("lodash");
 
 var COLLECTION_NAME = "Players";
 
-var Player = function(data) {
+var Player = function(data, _id) {
   this.data = data;
+  if (_id) {
+    this._id = _id;
+  }
 };
 
 Player.prototype.data = {};
@@ -20,19 +23,22 @@ Player.findById = function(id) {
   return new Promise((resolve, reject) => {
     console.log("find by id! " + id);
     mongoClient.findById(COLLECTION_NAME, id).then(playerData => {
-      resolve(new Player(playerData));
+      resolve(new Player(playerData.data, playerData._id));
     });
   })
 };
 
 Player.addGameToPlayerById = function(playerId, gameId) {
   return new Promise((resolve, reject) => {
-    Player.findById(playerId, (player) => {
+    Player.findById(playerId).then(player => {
+      if (!player.data.currentGames) {
+        player.data.currentGames = [];
+      }
       player.data.currentGames.push(gameId);
-      player.save().then(() => {
+      player.save().then((saveData) => {
         resolve();
-      })
-    })
+      });
+    });
   });
 }
 
@@ -41,7 +47,7 @@ Player.getAll = function() {
     mongoClient.getAll(COLLECTION_NAME).then(playerDatas => {
       var players = [];
       playerDatas.forEach(playerData => {
-        players.push(new Player(playerData));
+        players.push(new Player(playerData.data, playerData._id));
       });
       resolve(players);
     });
@@ -50,9 +56,8 @@ Player.getAll = function() {
 
 Player.prototype.save = function() {
   return new Promise((resolve, reject) => {
-    var self = this;
     this.data = this.sanitize(this.data);
-    mongoClient.save(COLLECTION_NAME, self).then(() => {
+    mongoClient.save(COLLECTION_NAME, this).then(() => {
       resolve();
     });
   });

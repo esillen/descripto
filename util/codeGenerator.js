@@ -1,13 +1,13 @@
-codeGenerator = {};
+CodeGenerator = {};
 
-codeGenerator.generateRandomCode = function(callback) {
+CodeGenerator.generateRandomCode = function() {
     console.log("GENERATING RANDOM 3-DIGIT NUMBER");
     var randomNumbers = []
     for(var i = 0; i < 3; i++) {
         randomNumbers.push(Math.ceil(Math.random() * 4)); // generates numbers 1-4 inclusive
     }
-    var code = randomNumbers.join(".");
-    callback(code);
+    var code = randomNumbers.join("");
+    return code;
 }
 
-module.exports = codeGenerator;
+module.exports = CodeGenerator;

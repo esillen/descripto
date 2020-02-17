@@ -27,13 +27,16 @@ client.save = function(collectionName, data) {
       if (error) {
         reject(error);
       }
-      console.log("Saved object!!");
-      resolve(result);
+      if (result.result.nModified == 1) {
+        resolve(data._id);
+      } else {
+        resolve(result.ops[0]);
+      }
     });
   });
 }
 
-client.getAll = function(collectionName, callback) {
+client.getAll = function(collectionName) {
   return new Promise((resolve, reject) => {
     this.databaseObject.collection(collectionName).find({}).toArray(function(error, result) {
       if (error) {
@@ -45,7 +48,7 @@ client.getAll = function(collectionName, callback) {
   });
 }
 
-client.findById = function(collectionName, id, callback) {
+client.findById = function(collectionName, id) {
   return new Promise((resolve, reject) => {
     this.databaseObject.collection(collectionName).findOne({'_id':ObjectID(id)}, function(error, result) {
       if (error) {
