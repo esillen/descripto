@@ -28,7 +28,7 @@ client.save = function(collectionName, data) {
         reject(error);
       }
       if (result.result.nModified == 1) {
-        resolve(data._id);
+        resolve(data);
       } else {
         resolve(result.ops[0]);
       }

@@ -88,8 +88,8 @@ Team.prototype.save = function() {
   return new Promise((resolve, reject) => {
     var self = this;
     this.data = this.sanitize(this.data);
-    mongoClient.save(COLLECTION_NAME, self).then((data) => {
-      resolve(data);
+    mongoClient.save(COLLECTION_NAME, self).then((storeTeamData) => {
+      resolve(storeTeamData);
     });
   });
 };

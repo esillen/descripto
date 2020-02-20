@@ -134,23 +134,24 @@ Game.prototype.storeLogs = function(teams) {
 }
 
 Game.prototype.newTurn = function() {
-  this.data.turn = this.data.turn + 1;
-  this.data.teamCodes = [];
-  const getTeamPromises = []
-  for(const teamId of this.data.teams) {
-    this.data.teamCodes.push(CodeGenerator.generateRandomCode());
-    getTeamPromises.push(Team.findById(teamId));
-  }
-  Promise.all(getTeamPromises).then(teams => {
-    const teamNewTurnPromises = [];
-    for(const team of teams) {
-      teamNewTurnPromises.push(team.newTurn());
+  return new Promise((resolve, reject) => {
+    this.data.turn = this.data.turn + 1;
+    this.data.teamCodes = [];
+    const getTeamPromises = []
+    for(const teamId of this.data.teams) {
+      this.data.teamCodes.push(CodeGenerator.generateRandomCode());
+      getTeamPromises.push(Team.findById(teamId));
     }
-    Promise.all(teamNewTurnPromises).then(() => {
-      return this.save();
+    Promise.all(getTeamPromises).then(teams => {
+      const teamNewTurnPromises = [];
+      for(const team of teams) {
+        teamNewTurnPromises.push(team.newTurn());
+      }
+      Promise.all(teamNewTurnPromises).then(() => {
+        this.save().then(() => resolve());
+      });
     });
   });
-  
 }
 
 Game.prototype.save = function() {
