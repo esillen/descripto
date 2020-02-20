@@ -82,7 +82,21 @@ Game.prototype.checkForTurnEndAndUpdate = function() {
         resolve("Guess submitted");
       }
     });
-});
+  });
+}
+
+Game.prototype.getGameDisplayData = function() {
+  return new Promise((resolve, reject) => {
+    const getTeamPromises = [];
+    for (const teamId of this.data.teams) {
+      getTeamPromises.push(Team.findById(teamId));
+    }
+    Promise.all(getTeamPromises).then(teams => {
+      const teamNames = teams.map(team => team.data.name);
+      const gameDisplayData = {gameId: this._id, teamNames: teamNames}
+      resolve(gameDisplayData);
+    });
+  });
 }
 
 Game.prototype.updateScores = function(teams) {

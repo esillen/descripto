@@ -12,8 +12,20 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:playerid', function(req, res, next) {
-  Game.getAll().then((games) => {
-    res.render('play_playerid', { title: 'DESCRIPTO', games: games, playerid: req.params.playerid});
+  Player.findById(req.params.playerid).then((player) => {
+    const getGamePromises = [];
+    for (const currentGameId of player.data.currentGames) {
+      getGamePromises.push(Game.findById(currentGameId));
+    }
+    Promise.all(getGamePromises).then((currentGames) => {
+      const getGameDisplayDataPromises = [];
+      for(const currentGame of currentGames) {
+        getGameDisplayDataPromises.push(currentGame.getGameDisplayData());
+      }
+      Promise.all(getGameDisplayDataPromises).then(gameDisplayDatas => {
+        res.render('play_playerid', { title: 'DESCRIPTO', gameDisplayDatas: gameDisplayDatas, playerid: req.params.playerid});
+      });
+    });
   });
 });
 

@@ -5,5 +5,5 @@ block content
   p Welcome to #{title}
 
   ul
-    each game in games
-      li: a(href="/play/" + playerid + "/" + game._id) Continue Game #{game._id}
+    each gameDisplayData in gameDisplayDatas
+      li: a(href="/play/" + playerid + "/" + gameDisplayData.gameId) Continue Game with teams: #{gameDisplayData.teamNames.join(" vs. ")}
