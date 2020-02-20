@@ -30,11 +30,7 @@ Game.createNew = function(teamIds, logIds) {
     var gameData = {};
     gameData.teams = teamIds;
     gameData.teamLogs = logIds;
-    gameData.turn = 1;
-    gameData.teamCodes = [];
-    gameData.teams.forEach(team => {
-      gameData.teamCodes.push(CodeGenerator.generateRandomCode());
-    });
+    gameData.turn = 0;
     var newGame = new Game(gameData);
     newGame.newTurn().then(() => {
       newGame.save().then(storeGameData => {

@@ -15,19 +15,33 @@ block content
 
 
   if player._id == team.data.cryptographer
-    p You're the decrypter
+    p You're the decrypter. The code is:
+    h2 #{team.data.code.join(".")}
+    if team.data.hints.length != 3
+      h2 Submit your hints below:
+      form(method='POST' action='/hint/' + game._id + '/team/' + team._id)
+        div.form-group
+          label(for='hint1') Hint 1:
+            input#name.form-control(type='text', placeholder='hint' name='hint1' maxlength=25)
+        div.form-group
+          label(for='hint2') Hint 2:
+            input#name.form-control(type='text', placeholder='hint' name='hint2' maxlength=25)
+        div.form-group
+          label(for='hint3') Hint 3:
+            input#name.form-control(type='text', placeholder='hint' name='hint3' maxlength=25)
+        button(type='submit') SUBMIT HINTS
+    else
+
   else
     p You're a regular player
-
-  form(method='POST' action='/hint/' + game._id + '/team/' + team._id)
-    div.form-group
-      label(for='hint1') Hint 1:
-        input#name.form-control(type='text', placeholder='hint' name='hint1' maxlength=25)
-    div.form-group
-      label(for='hint2') Hint 2:
-        input#name.form-control(type='text', placeholder='hint' name='hint2' maxlength=25)
-    div.form-group
-      label(for='hint3') Hint 3:
-        input#name.form-control(type='text', placeholder='hint' name='hint3' maxlength=25)
-    button(type='submit') SUBMIT HINTS
+    if team.data.hints.length != 3
+      p Waiting for hints
+    else
+      p Submit your guess below (Format: XXX, for example 321)
+        form(method='POST' action='/guess/' + game._id + '/guessingTeam/' + team._id + '/otherTeam/' + team._id)
+          div.form-group
+            label(for='guess') GUESS:
+              input#name.form-control(type='text', placeholder='000' name='guess' maxlength=3)
+          button(type='submit') SUBMIT GUESS
+    
 

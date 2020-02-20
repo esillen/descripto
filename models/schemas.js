@@ -10,6 +10,7 @@ schemas = {
   team: {
     words: [],
     hints: [],
+    code: [], // 1,2,3 for example
     guessPoints: 0, // good
     otherGuessesPoints: 0, // bad
     failPoints: 0, // bad
@@ -20,7 +21,6 @@ schemas = {
   game: {
     teams: [], //List of team ids
     teamLogs: [], // List of log ids
-    teamCodes: [], // Codes in paintext
     turn: 0,
   },
   gameLog: {

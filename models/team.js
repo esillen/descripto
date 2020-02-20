@@ -1,6 +1,7 @@
 var mongoClient = require("../db/mongoClient");
 var schemas = require("./schemas.js");
 var _ = require("lodash");
+var CodeGenerator = require('../util/codeGenerator');
 
 var COLLECTION_NAME = "Teams";
 
@@ -80,6 +81,10 @@ Team.prototype.newTurn = function() {
   return new Promise((resolve, reject) => {
     let currentIndex = this.data.players.indexOf(this.data.cryptographer);
     currentIndex = (currentIndex + 1) % this.data.players.length;
+    this.data.cryptographer = this.data.players[currentIndex];
+    this.data.guesses = {};
+    this.data.hints = [];
+    this.data.code = CodeGenerator.generateRandomCode(this.data.words.length);
     this.save().then(() => resolve());
   });
 }
