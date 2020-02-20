@@ -3,16 +3,28 @@ extends layout
 block content
   h1 CREATE NEW GAME OF DESCRIPTO
   h2 Welcome to #{title}
-  h3 select players for team 1
+  h3 TEAM 1
   form(method="POST" action="/game/createNew")
-    select(name='team1' multiple)
-      for player in players
-        option(value=player._id selected=false) #{player.data.name}
-    h3 select players for team 2
-    select(name='team2' multiple)
-      for player in players
-        option(value=player._id selected=false) #{player.data.name}
-    select(name="numWords")
-      for num in [4,5]
-        option(value=num selected=false) #{num}
+    div.form-group
+      label(for='team1name') Team 1 name:
+        input#name.form-control(type='text', placeholder='team name' name='team1name' maxlength=25)
+    div.form-group
+      label(for='team1name') Select players:
+        select(name='team1' multiple)
+          for player in players
+            option(value=player._id selected=false) #{player.data.name}
+    h3 TEAM 2
+    div.form-group
+      label(for='team2name') Team 2 name:
+        input#name.form-control(type='text', placeholder='team name' name='team2name' maxlength=25)
+    div.form-group
+      label(for='team1name') Select players:
+        select(name='team2' multiple)
+          for player in players
+            option(value=player._id selected=false) #{player.data.name}
+    div.form-group
+      label(for="numWords") Number of words
+        select(name="numWords")
+          for num in [4,5]
+            option(value=num selected=false) #{num}
     button(type="submit") CREATE

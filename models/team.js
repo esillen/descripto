@@ -65,9 +65,10 @@ Team.getAll = function() {
 };
 
 // Returns the created teams' id
-Team.createNew = function(teamMembersPlayerIds, words) {
+Team.createNew = function(teamName, teamMembersPlayerIds, words) {
   return new Promise((resolve, reject) => {
     var teamData = {};
+    teamData.name = teamName;
     teamData.players = teamMembersPlayerIds;
     teamData.words = words;
     var newTeam = new Team(teamData);

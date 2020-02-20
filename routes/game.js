@@ -2,7 +2,6 @@ var express = require("express");
 var router = express.Router();
 var Game = require("../models/game");
 var Team = require("../models/team");
-var Guess = require("../models/guess");
 var Validator = require("../util/validator");
 var RandomUtils = require("../util/randomUtils");
 var Player = require("../models/player");
@@ -25,6 +24,7 @@ router.get("/createNew", function(req, res, next) {
 // { numWords: 4, teams1: [playerId1, playerId2...], team2: [playerId1, playerId2...] }
 router.post("/createNew", function(req, res, next) {
   var numWords = parseInt(req.body.numWords);
+  var teamNames = [req.body.team1name, req.body.team2name]
   var teams = [req.body.team1, req.body.team2];
   // Make sure all players are unique
   if (Validator.unformedTeamsDoNotContainSamePlayers(teams) && req.body.numWords) {
@@ -34,6 +34,7 @@ router.post("/createNew", function(req, res, next) {
     var teamPromises = [];
     for (var i = 0; i < teams.length; i++) {
       teamPromises.push(Team.createNew(
+          teamNames[i],
           teams[i], 
           shuffledWords.slice(i*numWords, i*numWords + numWords)));
       for(const playerId of teams[i]) {
