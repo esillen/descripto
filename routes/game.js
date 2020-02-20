@@ -24,7 +24,7 @@ router.get("/createNew", function(req, res, next) {
 // Creates a game with players
 // { numWords: 4, teams1: [playerId1, playerId2...], team2: [playerId1, playerId2...] }
 router.post("/createNew", function(req, res, next) {
-  var numWords = req.body.numWords;
+  var numWords = parseInt(req.body.numWords);
   var teams = [req.body.team1, req.body.team2];
   // Make sure all players are unique
   if (Validator.unformedTeamsDoNotContainSamePlayers(teams) && req.body.numWords) {
@@ -35,7 +35,7 @@ router.post("/createNew", function(req, res, next) {
     for (var i = 0; i < teams.length; i++) {
       teamPromises.push(Team.createNew(
           teams[i], 
-          shuffledWords.slice(i*numWords, numWords)));
+          shuffledWords.slice(i*numWords, i*numWords + numWords)));
       for(const playerId of teams[i]) {
         players.push(playerId); // Players are saved for later when we add the gameid to the players.
       }
