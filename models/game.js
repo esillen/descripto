@@ -36,8 +36,10 @@ Game.createNew = function(teamIds, logIds) {
       gameData.teamCodes.push(CodeGenerator.generateRandomCode());
     });
     var newGame = new Game(gameData);
-    newGame.save().then(storeGameData => {
-      resolve(storeGameData._id.toString());
+    newGame.newTurn().then(() => {
+      newGame.save().then(storeGameData => {
+        resolve(storeGameData._id.toString());
+      });
     });
   });
 }
@@ -132,12 +134,23 @@ Game.prototype.storeLogs = function(teams) {
 }
 
 Game.prototype.newTurn = function() {
-  this.data.turn = gameData.turn + 1;
+  this.data.turn = this.data.turn + 1;
   this.data.teamCodes = [];
-  this.data.teams.forEach(team => {
-    gameData.teamCodes.push(CodeGenerator.generateRandomCode());
+  const getTeamPromises = []
+  for(const teamId of this.data.teams) {
+    this.data.teamCodes.push(CodeGenerator.generateRandomCode());
+    getTeamPromises.push(Team.findById(teamId));
+  }
+  Promise.all(getTeamPromises).then(teams => {
+    const teamNewTurnPromises = [];
+    for(const team of teams) {
+      teamNewTurnPromises.push(team.newTurn());
+    }
+    Promise.all(teamNewTurnPromises).then(() => {
+      return this.save();
+    });
   });
-  return this.save();
+  
 }
 
 Game.prototype.save = function() {

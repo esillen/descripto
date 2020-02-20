@@ -17,18 +17,18 @@ Validator.allGuessesCollected = function(teams) {
 }
 
 // Checks so all players are unique
-// unformedTeams: [ { playerIds: [playerId, teamId2...] }]
+// unformedTeams: [[playerId, playerId2...], [playerId, playerId2...] ]
 Validator.unformedTeamsDoNotContainSamePlayers = function(unformedTeams) {
   var encounteredPlayerIds = {};
-  unformedTeams.forEach(team => {
-    team.playerIds.forEach(playerId => {
-      if (encounteredPlayerIds.playerId) {
+  for(const team of unformedTeams) {
+    for(const playerId of team) {
+      if (encounteredPlayerIds[playerId]) {
         return false;
       } else {
-        encounteredPlayerIds.playerId = true;
+        encounteredPlayerIds[playerId] = true;
       }
-    });
-  });
+    }
+  }
   return true;
 }
 

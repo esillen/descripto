@@ -8,16 +8,20 @@ router.get("/", function(req, res, next) {
   });
 });
 
-router.get("/:id", function(req, res, next) {
-  if (req.params.id) {
-    Player.findById(req.params.id).then(player => {
-      res.send(player);
-    });
-  }
+router.get("/createNew", function(req, res, next) {
+  res.render('player-createnew');
 });
 
-router.post("/", function(req, res) {
-  console.log("About to add a new player! data: " + req.body);
+router.get("/:id", function(req, res, next) {
+if (req.params.id) {
+  Player.findById(req.params.id).then(player => {
+    res.send(player);
+  });
+}
+});
+
+router.post("/createNew", function(req, res) {
+  console.log("About to add a new player!");
   var newPlayer = new Player(req.body);
   newPlayer.save().then(() => {
     res.send("Added the player!");

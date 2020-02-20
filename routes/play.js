@@ -11,12 +11,6 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/newGame', function(req, res, next) {
-  Player.getAll().then((players) => {
-    res.render('newGame', { title: 'DESCRIPTO', players: players });
-  });
-});
-
 router.get('/:playerid', function(req, res, next) {
   Game.getAll().then((games) => {
     res.render('play_playerid', { title: 'DESCRIPTO', games: games, playerid: req.params.playerid});

@@ -76,6 +76,14 @@ Team.createNew = function(teamMembersPlayerIds, words) {
   });
 }
 
+Team.prototype.newTurn = function() {
+  return new Promise((resolve, reject) => {
+    let currentIndex = this.data.players.indexOf(this.data.cryptographer);
+    currentIndex = (currentIndex + 1) % this.data.players.length;
+    this.save().then(() => resolve());
+  });
+}
+
 Team.prototype.save = function() {
   return new Promise((resolve, reject) => {
     var self = this;

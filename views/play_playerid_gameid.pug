@@ -7,3 +7,9 @@ block content
   a(href='google.com') Google
   h2 WORDS
   h3 #{team.data.words.join(" ")}
+
+  if player._id == team.data.cryptographer
+    p You're the decrypter
+  else
+    p You're a regular player
+

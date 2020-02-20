@@ -15,11 +15,17 @@ router.get("/", function(req, res, next) {
   });
 });
 
+router.get("/createNew", function(req, res, next) {
+  Player.getAll().then((players) => {
+    res.render('game-createnew', { title: 'DESCRIPTO', players: players });
+  });
+});
+
 // Creates a game with players
-// { numWords: 4, teams: [ { playerIds: [playerId, teamId2...] }] }
+// { numWords: 4, teams1: [playerId1, playerId2...], team2: [playerId1, playerId2...] }
 router.post("/createNew", function(req, res, next) {
-  var teams = req.body.teams;
   var numWords = req.body.numWords;
+  var teams = [req.body.team1, req.body.team2];
   // Make sure all players are unique
   if (Validator.unformedTeamsDoNotContainSamePlayers(teams) && req.body.numWords) {
     // Create teams
@@ -28,9 +34,9 @@ router.post("/createNew", function(req, res, next) {
     var teamPromises = [];
     for (var i = 0; i < teams.length; i++) {
       teamPromises.push(Team.createNew(
-          teams[i].playerIds, 
+          teams[i], 
           shuffledWords.slice(i*numWords, i*numWords+numWords)));
-      teams[i].playerIds.forEach(playerId => {
+      teams[i].forEach(playerId => {
         players.push(playerId); // Players are saved for later when we add the gameid to the players.
       });
     }
