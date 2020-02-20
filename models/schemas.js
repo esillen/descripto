@@ -8,6 +8,7 @@ schemas = {
     turn: 0,
   },
   team: {
+    name: null, 
     words: [],
     hints: [],
     code: [], // 1,2,3 for example

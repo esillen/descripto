@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1= title
+  p Viewing #{otherteam.data.name}
+
+  a(href="/play/" + player._id + "/" + game._id) Go back to #{team.data.name}
+
+  h2 WORDS
+  h3 ? ? ? ?
+
+  h2 HINTS
+
+  if otherteam.data.hints.length != 3
+    p Waiting for hints
+  else
+    ul
+      each hint in otherteam.data.hints
+        li: p #{hint}
+
+    p Submit your guess below (Format: XXX, for example 321)
+      form(method='POST' action='/guess/' + game._id + '/guessingTeam/' + team._id + '/otherTeam/' + otherteam._id)
+        div.form-group
+          label(for='guess') GUESS:
+            input#name.form-control(type='text', placeholder='000' name='guess' maxlength=3)
+        button(type='submit') SUBMIT GUESS
+  
+

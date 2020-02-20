@@ -2,7 +2,11 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p Viewing #{team.data.name}
+  
+  h2 Other teams
+  each otherTeam in otherTeams
+    a(href="/play/" + player._id + "/" + game._id + "/" + otherTeam._id) View #{otherTeam.data.name}
 
   h2 WORDS
   h3 #{team.data.words.join(" ")}
