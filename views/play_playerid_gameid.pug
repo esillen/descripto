@@ -4,12 +4,30 @@ block content
   h1= title
   p Welcome to #{title}
 
-  a(href='google.com') Google
   h2 WORDS
   h3 #{team.data.words.join(" ")}
+
+  h2 HINTS
+  if team.data.hints
+    ul
+      each hint in team.data.hints
+        li: p #{hint}
+
 
   if player._id == team.data.cryptographer
     p You're the decrypter
   else
     p You're a regular player
+
+  form(method='POST' action='/hint/' + game._id + '/team/' + team._id)
+    div.form-group
+      label(for='hint1') Hint 1:
+        input#name.form-control(type='text', placeholder='hint' name='hint1' maxlength=25)
+    div.form-group
+      label(for='hint2') Hint 2:
+        input#name.form-control(type='text', placeholder='hint' name='hint2' maxlength=25)
+    div.form-group
+      label(for='hint3') Hint 3:
+        input#name.form-control(type='text', placeholder='hint' name='hint3' maxlength=25)
+    button(type='submit') SUBMIT HINTS
 

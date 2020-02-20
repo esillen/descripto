@@ -9,6 +9,7 @@ schemas = {
   },
   team: {
     words: [],
+    hints: [],
     guessPoints: 0, // good
     otherGuessesPoints: 0, // bad
     failPoints: 0, // bad

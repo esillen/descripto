@@ -4,8 +4,6 @@ block content
   h1= title
   p Welcome to #{title}
 
-  a(href='google.com') Google
-  
   ul
     each game in games
       li: a(href="/play/" + playerid + "/" + game._id) Continue Game #{game._id}
