@@ -24,17 +24,15 @@ Game.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
-// Returns the id of the newly created game
-Game.createNew = function(teamIds, logIds) {
+Game.createNew = function(teams) {
   return new Promise((resolve, reject) => {
     var gameData = {};
-    gameData.teams = teamIds;
-    gameData.teamLogs = logIds;
+    gameData.teams = teams.map(team => team._id.toString());
     gameData.turn = 0;
     var newGame = new Game(gameData);
     newGame.newTurn().then(() => {
       newGame.save().then(storeGameData => {
-        resolve(storeGameData._id.toString());
+        resolve(storeGameData);
       });
     });
   });

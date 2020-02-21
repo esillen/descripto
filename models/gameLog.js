@@ -20,21 +20,23 @@ GameLog.prototype.sanitize = function(data) {
 };
 
 // Returns an id with the newly created gamelog
-GameLog.createNew = function(teamIds) {
+GameLog.createNew = function(ownerTeam, allTeams) {
   return new Promise((resolve, reject) => {
     const allTeamsLogData = [];
-    teamIds.forEach(teamId => {
+    const allTeamIds = allTeams.map((team) => team._id.toString());
+    allTeamIds.forEach(teamId => {
       const teamLogData = {};
       teamLogData.teamId = teamId;
       teamLogData.turns = [];
       allTeamsLogData.push(teamLogData)
     });
     var gameLogData = {};
+    gameLogData.ownerTeam = ownerTeam._id.toString();
     gameLogData.teams = allTeamsLogData;
     var gameLog = new GameLog(gameLogData);
     gameLog.data = gameLog.sanitize(gameLog.data);
     gameLog.save().then(gameLogSaveData => {
-      resolve(gameLogSaveData._id.toString());
+      resolve(gameLogSaveData);
     });
   });
 }

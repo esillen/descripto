@@ -28,13 +28,14 @@ Player.findById = function(id) {
   })
 };
 
-Player.addGameToPlayerById = function(playerId, gameId) {
+// TODO: should rather be a prototype method 
+Player.addGameToPlayerById = function(playerId, game) {
   return new Promise((resolve, reject) => {
     Player.findById(playerId).then(player => {
       if (!player.data.currentGames) {
         player.data.currentGames = [];
       }
-      player.data.currentGames.push(gameId);
+      player.data.currentGames.push(game._id.toString());
       player.save().then((saveData) => {
         resolve();
       });

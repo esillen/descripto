@@ -18,22 +18,23 @@ schemas = {
     players: [],
     cryptographer: null,
     guesses: {}, // Key-value store with teamId: guess
+    log: null, // the log id
   },
   game: {
     teams: [], //List of team ids
-    teamLogs: [], // List of log ids
     turn: 0,
   },
   gameLog: {
+    ownerTeam: null,
     teams: [
       {
         teamId : null,
         turns: [
           {
             hints: [],
-            guess: null,
-            theirGuess: null,
-            correct: null,
+            guess: [],
+            theirGuess: [],
+            correct: [],
           }
         ]
       }

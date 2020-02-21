@@ -33,7 +33,7 @@ router.get('/:playerid/:gameid', function(req, res, next) {
   Game.findById(req.params.gameid).then(game => {
     Player.findById(req.params.playerid).then(player => {
       Team.findAmongIdsByPlayerId(game.data.teams, player._id).then(team => {
-        GameLog.findSomeById(game.data.teamLogs).then(gameLogs => {
+        GameLog.findById(team.data.log).then(gameLog => {
           const otherTeamPromises = [];
           for (const otherTeamId of game.data.teams) {
             if (otherTeamId != team._id) {
@@ -41,7 +41,7 @@ router.get('/:playerid/:gameid', function(req, res, next) {
             }
           }
           Promise.all(otherTeamPromises).then((otherTeams) => {
-            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, gameLogs: gameLogs, team: team, otherTeams: otherTeams});
+            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, gameLog: gameLog, team: team, otherTeams: otherTeams});
           });
         }); 
       });
@@ -54,8 +54,8 @@ router.get('/:playerid/:gameid/:otherteamid', function(req, res, next) {
     Player.findById(req.params.playerid).then(player => {
       Team.findAmongIdsByPlayerId(game.data.teams, player._id).then(team => {
         Team.findById(req.params.otherteamid).then((otherteam) => {
-          GameLog.findSomeById(game.data.teamLogs).then(gameLogs => {
-            res.render('play_playerid_gameid_otherteamid', { title: 'DESCRIPTO', game: game, player: player, gameLogs: gameLogs, team: team, otherteam: otherteam});
+          GameLog.findById(otherteam.data.log).then(gameLog => {
+            res.render('play_playerid_gameid_otherteamid', { title: 'DESCRIPTO', game: game, player: player, gameLog: gameLog, team: team, otherteam: otherteam});
           });
         }); 
       });

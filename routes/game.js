@@ -30,7 +30,7 @@ router.post("/createNew", function(req, res, next) {
   if (Validator.unformedTeamsDoNotContainSamePlayers(teams) && req.body.numWords) {
     // Create teams
     var shuffledWords = RandomUtils.shuffle(WORDS);
-    var players = [];
+    var playerIds = [];
     var teamPromises = [];
     for (var i = 0; i < teams.length; i++) {
       teamPromises.push(Team.createNew(
@@ -38,22 +38,30 @@ router.post("/createNew", function(req, res, next) {
           teams[i], 
           shuffledWords.slice(i*numWords, i*numWords + numWords)));
       for(const playerId of teams[i]) {
-        players.push(playerId); // Players are saved for later when we add the gameid to the players.
+        playerIds.push(playerId); // Players are saved for later when we add the gameid to the players.
       }
     }
-    Promise.all(teamPromises).then(teamIds => {
+    Promise.all(teamPromises).then(teams => {
       const logPromises = [];
-      for (const teamId of teamIds) {
-        logPromises.push(GameLog.createNew(teamIds));
+      for (const team of teams) {
+        logPromises.push(GameLog.createNew(team, teams));
       }
-      Promise.all(logPromises).then(teamLogIds => {
-        Game.createNew(teamIds, teamLogIds).then(newGameId => {
-          var playerPromises = [];
-          players.forEach(playerId => {
-            playerPromises.push(Player.addGameToPlayerById(playerId, newGameId));
-          });
-          Promise.all(playerPromises).then(() => {
-            res.send("OMG CREATED A NEW GAME!! Id:" + newGameId);
+      Promise.all(logPromises).then(teamLogs => {
+        const saveTeamPromises = [];
+        for (const teamLog of teamLogs) {
+          const ownerTeam = teams.find(team => team._id.toString() == teamLog.data.ownerTeam);
+          ownerTeam.data.log = teamLog._id.toString();
+          saveTeamPromises.push(ownerTeam.save());
+        }
+        Promise.all(saveTeamPromises).then((IDONTCARE) => {
+          Game.createNew(teams).then(newGame => {
+            var playerPromises = [];
+            playerIds.forEach(playerId => {
+              playerPromises.push(Player.addGameToPlayerById(playerId, newGame));
+            });
+            Promise.all(playerPromises).then(() => {
+              res.send("OMG CREATED A NEW GAME!! Id:" + newGame._id.toString());
+            });
           });
         });
       });
