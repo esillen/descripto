@@ -2,6 +2,7 @@ var mongoClient = require("../db/mongoClient");
 var schemas = require("./schemas.js");
 var _ = require("lodash");
 var CodeGenerator = require('../util/codeGenerator');
+var GameLog = require('../models/gameLog');
 
 var COLLECTION_NAME = "Teams";
 

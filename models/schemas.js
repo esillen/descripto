@@ -22,6 +22,7 @@ schemas = {
   },
   game: {
     teams: [], //List of team ids
+    numWords: 0,
     turn: 0,
   },
   gameLog: {

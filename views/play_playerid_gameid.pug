@@ -41,11 +41,13 @@ block content
     if team.data.hints.length != 3
       p Waiting for hints
     else
-      p Submit your guess below (Format: XXX, for example 321)
-        form(method='POST' action='/guess/' + game._id + '/guessingTeam/' + team._id + '/otherTeam/' + team._id)
-          div.form-group
-            label(for='guess') GUESS:
-              input#name.form-control(type='text', placeholder='000' name='guess' maxlength=3)
-          button(type='submit') SUBMIT GUESS
-    
+      if !team.data.guesses[team._id.toString()] || team.data.guesses[team._id.toString()].length == 0
+        p Submit your guess below (Format: XXX, for example 321)
+          form(method='POST' action='/guess/' + game._id + '/guessingTeam/' + team._id + '/otherTeam/' + team._id)
+            div.form-group
+              label(for='guess') GUESS:
+                input#name.form-control(type="text" pattern="[1-#{game.data.numWords}]*" placeholder='000' name='guess' maxlength=3)
+            button(type='submit') SUBMIT GUESS
+      else
+        p Submitted guess: #{team.data.guesses[team._id.toString()]}
 

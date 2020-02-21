@@ -9,15 +9,15 @@ router.post("/:gameid/guessingTeam/:teamid/otherTeam/:otherteamid", (req, res) =
   Game.findById(req.params.gameid).then(game => {
     //if (req.body.turn.data.turn == game.data.turn) {
       Team.findById(req.params.teamid).then(team => {
-        if (!team.data.guesses[req.params.otherteamid]) {
+        //TODO REINTRODUCE if (!team.data.guesses[req.params.otherteamid]) {
           team.data.guesses[req.params.otherteamid] = req.body.guess;
           team.save().then(() => {
             game.checkForTurnEndAndUpdate();
             res.send("Guess was submitted");
           });
-        } else {
-          res.send("A guess already exist. Sorry!");
-        }
+        //} else {
+          //res.send("A guess already exist. Sorry!");
+        //}
       });
     /*} else {
       res.send("Guess was submitted for the wrong turn");

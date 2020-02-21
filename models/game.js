@@ -24,10 +24,11 @@ Game.prototype.sanitize = function(data) {
   return _.pick(_.defaults(data, schema), _.keys(schema));
 };
 
-Game.createNew = function(teams) {
+Game.createNew = function(teams, numWords) {
   return new Promise((resolve, reject) => {
     var gameData = {};
     gameData.teams = teams.map(team => team._id.toString());
+    gameData.numWords = numWords;
     gameData.turn = 0;
     var newGame = new Game(gameData);
     newGame.newTurn().then(() => {
@@ -68,7 +69,6 @@ Game.prototype.checkForTurnEndAndUpdate = function() {
     Promise.all(teamPromises).then(teams => {
       if (Validator.allGuessesCollected(teams)) {
         console.log("Time for new round");
-        // TODO: solve this using promises!!
         this.updateScores(teams).then(() => {
           this.storeLogs(teams).then(() => { 
             this.newTurn().then(() => {
@@ -100,9 +100,7 @@ Game.prototype.getGameDisplayData = function() {
 Game.prototype.updateScores = function(teams) {
   for(const team of teams) {
     // Give fail scores
-    const teamId = team._id.toString();
-    const teamIndex = this.data.teams.indexOf(teamId);
-    const teamCode = this.data.teamCodes[teamIndex];
+    const teamCode = team.data.code.join("");
     if (team.data.guesses[team] != teamCode) {
       team.data.failPoints += 1;
     }
@@ -123,21 +121,34 @@ Game.prototype.updateScores = function(teams) {
   return Promise.all(teamPromises);
 }
 
-Game.prototype.storeLogs = function(teams) {
+Game.prototype.storeLogs = function(teams, turn) {
   return new Promise((resolve, reject) => {
-    const storeLogPromises = [];
-    for(let i = 0; i < teams.length; i++) {
-      const team = teams[i];
-      const gameLogId = this.data.teamLogs[i];
-      GameLog.findById(gameLogId).then((gameLog) => {
-        gameLog.storeRoundData(team, teams, this.data.teamCodes).then(() => {
-          return gameLog.save();
-        });
-      });
+    const teamKeyValue = {}; // teamId: guesses for other teams
+    const getGameLogPromises = [];
+    for(const team of teams) {
+      teamKeyValue[team._id.toString()] = team;
+      getGameLogPromises.push(GameLog.findById(team.data.log))
     }
-    Promise.all(storeLogPromises).then(() => {
-      resolve("Updated logs!");
-    })
+    Promise.all(getGameLogPromises).then(gameLogs => {
+      const storeGameLogPromises = [];
+      for(const gameLog of gameLogs) {
+        const currentTeam = teamKeyValue[gameLog.data.ownerTeam];
+        for(const gameLogTeamData of gameLog.data.teams) {
+          const otherTeamId = gameLogTeamData.teamId;
+          const otherTeam = teamKeyValue[otherTeamId];
+          const newTurnLogData = {};
+          newTurnLogData.hints = otherTeam.data.hints;
+          newTurnLogData.guesses = currentTeam.data.guesses[otherTeamId];
+          newTurnLogData.theirGuesses = otherTeam.data.guesses[otherTeamId];
+          newTurnLogData.correct = otherTeam.data.code;
+          gameLogTeamData.turns.push(newTurnLogData);
+        }
+        storeGameLogPromises.push(gameLog.save());
+      }
+      Promise.all(storeGameLogPromises).then(logs => {
+        resolve(logs);
+      })
+    });
   });
 }
 

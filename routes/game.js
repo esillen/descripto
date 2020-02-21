@@ -54,7 +54,7 @@ router.post("/createNew", function(req, res, next) {
           saveTeamPromises.push(ownerTeam.save());
         }
         Promise.all(saveTeamPromises).then((IDONTCARE) => {
-          Game.createNew(teams).then(newGame => {
+          Game.createNew(teams, numWords).then(newGame => {
             var playerPromises = [];
             playerIds.forEach(playerId => {
               playerPromises.push(Player.addGameToPlayerById(playerId, newGame));
