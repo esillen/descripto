@@ -2,12 +2,16 @@ extends layout
 
 block content
   h1= title
-  p Viewing #{team.data.name}
-  
+  h2 Viewing #{team.data.name}
+
+  p correct guesses on other teams :) #{team.data.guessPoints}
+  p failpoints :( #{team.data.failPoints}
+  p other teams guessed correctly :( #{team.data.otherGuessesPoints}
+ 
   h2 Other teams
   each otherTeam in otherTeams
     a(href="/play/" + player._id + "/" + game._id + "/" + otherTeam._id) View #{otherTeam.data.name}
-
+ 
   h2 WORDS
   h3 #{team.data.words.join(" ")}
 
