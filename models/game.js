@@ -138,8 +138,8 @@ Game.prototype.storeLogs = function(teams, turn) {
           const otherTeam = teamKeyValue[otherTeamId];
           const newTurnLogData = {};
           newTurnLogData.hints = otherTeam.data.hints;
-          newTurnLogData.guesses = currentTeam.data.guesses[otherTeamId];
-          newTurnLogData.theirGuesses = otherTeam.data.guesses[otherTeamId];
+          newTurnLogData.guess = currentTeam.data.guesses[otherTeamId];
+          newTurnLogData.theirGuess = otherTeam.data.guesses[otherTeamId];
           newTurnLogData.correct = otherTeam.data.code;
           gameLogTeamData.turns.push(newTurnLogData);
         }

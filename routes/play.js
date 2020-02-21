@@ -41,7 +41,8 @@ router.get('/:playerid/:gameid', function(req, res, next) {
             }
           }
           Promise.all(otherTeamPromises).then((otherTeams) => {
-            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, gameLog: gameLog, team: team, otherTeams: otherTeams});
+            const teamTurnsLog = gameLog.data.teams.find(teamLog => teamLog.teamId == team._id.toString()).turns;
+            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, team: team, otherTeams: otherTeams});
           });
         }); 
       });
@@ -54,8 +55,9 @@ router.get('/:playerid/:gameid/:otherteamid', function(req, res, next) {
     Player.findById(req.params.playerid).then(player => {
       Team.findAmongIdsByPlayerId(game.data.teams, player._id).then(team => {
         Team.findById(req.params.otherteamid).then((otherteam) => {
-          GameLog.findById(otherteam.data.log).then(gameLog => {
-            res.render('play_playerid_gameid_otherteamid', { title: 'DESCRIPTO', game: game, player: player, gameLog: gameLog, team: team, otherteam: otherteam});
+          GameLog.findById(team.data.log).then(gameLog => {
+            const teamTurnsLog = gameLog.data.teams.find(teamLog => teamLog.teamId == otherteam._id.toString()).turns;
+            res.render('play_playerid_gameid_otherteamid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, team: team, otherteam: otherteam});
           });
         }); 
       });

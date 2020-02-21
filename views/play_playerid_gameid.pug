@@ -55,3 +55,9 @@ block content
       else
         p Submitted guess: #{team.data.guesses[team._id.toString()]}
 
+  h2 LOG
+  each turnLog, turnIndex in teamTurnsLog
+    h3 turn #{turnIndex + 1}
+    p hints: #{turnLog.hints}
+    p guess: #{turnLog.guess}
+    p correct: #{turnLog.correct}
