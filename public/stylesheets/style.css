@@ -18,3 +18,48 @@ div.word {
   padding: 20px;
   font-size: 20px;
 }
+
+div.warnings {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+div.warning {
+  display: inline;
+  border: 1px dashed orange;
+  color: orange;
+  padding: 5px;
+  margin: 2px;
+}
+
+
+div.log {
+  border: 2px solid;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: row;
+}
+
+div.log-hints {
+  display: flex;
+  flex-direction: column;
+}
+
+div.log-hint {
+  border: 1px solid;
+}
+
+div.log-guesses {
+  display: flex;
+  flex-direction: row;
+}
+
+div.log-guess {
+  display: flex;
+  flex-direction: column;
+}
+
+div.log-guess-number {
+  border: 1px solid;
+}

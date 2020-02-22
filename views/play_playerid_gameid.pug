@@ -2,7 +2,7 @@ extends layout
 
 block content
   h1 #{title} turn #{game.data.turn}
-  h2 Viewing #{team.data.name}
+  h2 Viewing Your Team: #{team.data.name}
 
   p correct guesses on other teams :) #{team.data.guessPoints}
   p failpoints :( #{team.data.failPoints}
@@ -25,7 +25,7 @@ block content
 
 
   if player._id == team.data.cryptographer
-    p You're the decrypter. The code is:
+    p You're the cryptographer. The code is:
     h2 #{team.data.code.join(".")}
     if team.data.hints.length != 3
       h2 Submit your hints below:
@@ -45,7 +45,7 @@ block content
   else
     p You're a regular player
     if team.data.hints.length != 3
-      p Waiting for hints
+      div.warning Waiting for hints
     else
       if !team.data.guesses[team._id.toString()] || team.data.guesses[team._id.toString()].length == 0
         p Submit your guess below (Format: XXX, for example 321)
@@ -59,12 +59,24 @@ block content
 
   if thingsLeftToDo
     h2 THINGS LEFT BEFORE TURN END
-    each thingLeftToDo in thingsLeftToDo
-      p= thingLeftToDo
+    div.warnings
+      each thingLeftToDo in thingsLeftToDo
+        div.warning= thingLeftToDo
 
-  h2 LOG
+  h2 LOG (? = guess, ! = correct)
   each turnLog, turnIndex in teamTurnsLog
     h3 turn #{turnIndex + 1}
-    p hints: #{turnLog.hints}
-    p guess: #{turnLog.guess}
-    p correct: #{turnLog.correct}
+    div.log
+      div.log-hints
+        div.log-hint hints:
+        each hint, hintIndex in turnLog.hints
+          div.log-hint #{hintIndex}. #{hint}
+      div.log-guesses
+        div.log-guess
+          div.log-guess-number ?
+          each guessNumber in turnLog.guess
+            div.log-guess-number= guessNumber
+        div.log-guess
+          div.log-guess-number !
+          each correctNumber in turnLog.correct
+            div.log-guess-number= correctNumber

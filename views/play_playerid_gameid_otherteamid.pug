@@ -8,7 +8,7 @@ block content
   p failpoints :( #{otherteam.data.failPoints}
   p other teams guessed correctly :( #{otherteam.data.otherGuessesPoints}
 
-  a(href="/play/" + player._id + "/" + game._id) Go back to #{team.data.name}
+  a(href="/play/" + player._id + "/" + game._id) Go back to your team
 
   h2 WORDS
   div.words
@@ -18,7 +18,7 @@ block content
   h2 HINTS
 
   if otherteam.data.hints.length != 3
-    p Waiting for hints
+    div.warning Waiting for hints
   else
     ol
       each hint in otherteam.data.hints
@@ -32,11 +32,25 @@ block content
           button(type='submit') SUBMIT GUESS
     else
       p Submitted guess: #{team.data.guesses[otherteam._id.toString()]}
-
-  h2 LOG
+  
+  h2 LOG (? = guess, ?! = their guess, ! = correct)
   each turnLog, turnIndex in teamTurnsLog
     h3 turn #{turnIndex + 1}
-    p hints: #{turnLog.hints}
-    p our guess: #{turnLog.guess}
-    p their guess: #{turnLog.theirGuess}
-    p correct: #{turnLog.correct}
+    div.log
+      div.log-hints
+        div.log-hint hints:
+        each hint, hintIndex in turnLog.hints
+          div.log-hint #{hintIndex}. #{hint}
+      div.log-guesses
+        div.log-guess
+          div.log-guess-number ?
+          each guessNumber in turnLog.guess
+            div.log-guess-number= guessNumber
+        div.log-guess
+          div.log-guess-number ?!
+          each theirGuessNumber in turnLog.theirGuess
+            div.log-guess-number= theirGuessNumber
+        div.log-guess
+          div.log-guess-number !
+          each correctNumber in turnLog.correct
+            div.log-guess-number= correctNumber
