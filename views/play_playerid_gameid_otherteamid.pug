@@ -1,7 +1,7 @@
-extends layout
+extends layout_otherteam
 
 block content
-  h1= title
+  h1 #{title} turn #{game.data.turn}
   h2 Viewing #{otherteam.data.name}
 
   p correct guesses on other teams :) #{otherteam.data.guessPoints}
@@ -11,7 +11,9 @@ block content
   a(href="/play/" + player._id + "/" + game._id) Go back to #{team.data.name}
 
   h2 WORDS
-  h3 ? ? ? ?
+  div.words
+    each word in otherteam.data.words
+      div.word ? 
 
   h2 HINTS
 

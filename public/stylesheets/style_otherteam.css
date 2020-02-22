@@ -1,0 +1,14 @@
+body {
+  background-color: darkslategray;
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: white;
+}
+
+a {
+  color: #00B7FF;
+}
+
+div.word {
+  border: solid 5px white;
+}
