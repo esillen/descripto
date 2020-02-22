@@ -90,5 +90,6 @@ div.wordhints {
 }
 
 div.wordhint-column {
-  
+  flex-grow: 1;
+  border: 1px solid;
 }

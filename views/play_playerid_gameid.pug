@@ -63,6 +63,14 @@ block content
       each thingLeftToDo in thingsLeftToDo
         div.warning= thingLeftToDo
 
+h2 Previous Word hints
+  div.wordhints
+    each wordHint, wordHintIndex in wordHints
+      div.wordhint-column
+        h2 #{wordHintIndex + 1}.
+        each hint in wordHint
+          p= hint
+
   if teamTurnsLog.length > 0
     h2 LOG (? = guess, ! = correct)
     each turnLog, turnIndex in teamTurnsLog
@@ -82,9 +90,3 @@ block content
             each correctNumber in turnLog.correct
               div.log-guess-number= correctNumber
   
-  div.wordhints
-    each wordHint, wordHintIndex in wordHints
-      div.wordhint-column
-        h2 #{wordHintIndex + 1}.
-        each hint in wordHint
-          p= hint

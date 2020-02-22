@@ -33,6 +33,14 @@ block content
     else
       p Submitted guess: #{team.data.guesses[otherteam._id.toString()]}
   
+  h2 Previous Word hints
+  div.wordhints
+    each wordHint, wordHintIndex in wordHints
+      div.wordhint-column
+        h2 #{wordHintIndex + 1}.
+        each hint in wordHint
+          p= hint
+
   if teamTurnsLog.length > 0
     h2 LOG (? = guess, ?! = their guess, ! = correct)
     each turnLog, turnIndex in teamTurnsLog
@@ -56,9 +64,3 @@ block content
             each correctNumber in turnLog.correct
               div.log-guess-number= correctNumber
   
-  div.wordhints
-    each wordHint, wordHintIndex in wordHints
-      div.wordhint-column
-        h2 #{wordHintIndex + 1}.
-        each hint in wordHint
-          p= hint
