@@ -118,7 +118,7 @@ Game.prototype.getThingsLeftToDo = function(teams) {
 Game.prototype.updateScores = function(teams) {
   for(const team of teams) {
     // Give fail scores
-    const teamCode = team.data.code.join("");
+    const teamCode = team.data.code;
     if (team.data.guesses[team] != teamCode) {
       team.data.failPoints += 1;
     }

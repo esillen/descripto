@@ -33,7 +33,6 @@ div.warning {
   margin: 2px;
 }
 
-
 div.log {
   border: 2px solid;
   border-radius: 2px;
@@ -44,10 +43,12 @@ div.log {
 div.log-hints {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
 div.log-hint {
   border: 1px solid;
+  padding: 4px 2px 4px 5px;
 }
 
 div.log-guesses {
@@ -60,6 +61,21 @@ div.log-guess {
   flex-direction: column;
 }
 
+div.log-guess-correct {
+  display: flex;
+  flex-direction: column;
+  background-color: cyan;
+}
+
+div.log-guess-wrong {
+  display: flex;
+  flex-direction: column;
+  background-color: lightsalmon;
+}
+
 div.log-guess-number {
   border: 1px solid;
+  border-radius: 2px;
+  padding: 2px;
+  margin: 2px;
 }

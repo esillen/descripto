@@ -5,13 +5,12 @@ const Team = require("../models/team")
 
 router.post("/:gameid/guessingTeam/:teamid/otherTeam/:otherteamid", (req, res) => {
   console.log("Guessed on other team. data: ");
-  console.log(req.body);
-  const guessArray = req.body.guess.split("").map(numberString => parseInt(numberString));
+  console.log(req.body.guess);
   Game.findById(req.params.gameid).then(game => {
     //if (req.body.turn.data.turn == game.data.turn) {
       Team.findById(req.params.teamid).then(team => {
         if (!team.data.guesses[req.params.otherteamid]) {
-          team.data.guesses[req.params.otherteamid] = guessArray;
+          team.data.guesses[req.params.otherteamid] = req.body.guess;
           team.save().then(() => {
             game.checkForTurnEndAndUpdate();
             res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');

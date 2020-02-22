@@ -26,7 +26,7 @@ block content
 
   if player._id == team.data.cryptographer
     p You're the cryptographer. The code is:
-    h2 #{team.data.code.join(".")}
+    h2 #{team.data.code.split("").join(".")}
     if team.data.hints.length != 3
       h2 Submit your hints below:
       form(method='POST' action='/hint/' + game._id + '/team/' + team._id)
@@ -55,7 +55,7 @@ block content
                 input#name.form-control(type="text" pattern="[1-#{game.data.numWords}]*" placeholder='000' name='guess' maxlength=3)
             button(type='submit') SUBMIT GUESS
       else
-        p Submitted guess: #{team.data.guesses[team._id.toString()]}
+        p Submitted guess: #{team.data.guesses[team._id.toString()].split("").join(".")}
 
   if thingsLeftToDo
     h2 THINGS LEFT BEFORE TURN END
@@ -72,11 +72,11 @@ block content
         each hint, hintIndex in turnLog.hints
           div.log-hint #{hintIndex}. #{hint}
       div.log-guesses
-        div.log-guess
+        div(class=turnLog.guess == turnLog.correct ? "log-guess-correct" : "log-guess-wrong")
           div.log-guess-number ?
           each guessNumber in turnLog.guess
             div.log-guess-number= guessNumber
-        div.log-guess
+        div(class="log-guess")
           div.log-guess-number !
           each correctNumber in turnLog.correct
             div.log-guess-number= correctNumber

@@ -42,11 +42,11 @@ block content
         each hint, hintIndex in turnLog.hints
           div.log-hint #{hintIndex}. #{hint}
       div.log-guesses
-        div.log-guess
+        div(class=turnLog.guess == turnLog.correct ? "log-guess-correct" : "log-guess-wrong")
           div.log-guess-number ?
           each guessNumber in turnLog.guess
             div.log-guess-number= guessNumber
-        div.log-guess
+        div(class=turnLog.theirGuess == turnLog.correct ? "log-guess-correct" : "log-guess-wrong")
           div.log-guess-number ?!
           each theirGuessNumber in turnLog.theirGuess
             div.log-guess-number= theirGuessNumber

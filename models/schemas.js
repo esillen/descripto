@@ -11,7 +11,7 @@ schemas = {
     name: null, 
     words: [],
     hints: [],
-    code: [], // 1,2,3 for example
+    code: null, // three digits as a string: "231" for example
     guessPoints: 0, // good
     otherGuessesPoints: 0, // bad
     failPoints: 0, // bad
@@ -33,9 +33,9 @@ schemas = {
         turns: [
           {
             hints: [],
-            guess: [],
-            theirGuess: [],
-            correct: [],
+            guess: null,
+            theirGuess: null,
+            correct: null,
           }
         ]
       }
