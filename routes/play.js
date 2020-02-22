@@ -4,6 +4,7 @@ var Game = require('../models/game');
 var Player = require('../models/player');
 var Team = require('../models/team');
 var GameLog = require('../models/gameLog');
+var LogWordFilter = require('../util/logWordFilter');
 
 router.get('/', function(req, res, next) {
   Player.getAll().then((players) => {
@@ -42,7 +43,8 @@ router.get('/:playerid/:gameid', function(req, res, next) {
           Promise.all(getTeamPromises).then((allTeams) => {
             const otherTeams = allTeams.filter(aTeam => aTeam._id.toString() != team._id.toString())
             const teamTurnsLog = gameLog.data.teams.find(teamLog => teamLog.teamId == team._id.toString()).turns;
-            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, thingsLeftToDo: game.getThingsLeftToDo(allTeams), team: team, otherTeams: otherTeams});
+            const wordHints = LogWordFilter.filterLogsToWords(teamTurnsLog, game.data.numWords)
+            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, thingsLeftToDo: game.getThingsLeftToDo(allTeams), team: team, otherTeams: otherTeams, wordHints: wordHints});
           });
         }); 
       });
@@ -52,13 +54,14 @@ router.get('/:playerid/:gameid', function(req, res, next) {
 
 // TODO: can probably reduce the fetches here by adding own team to route.
 router.get('/:playerid/:gameid/:otherteamid', function(req, res, next) {
-  Game.findById(req.params.gameid).then(game => {
+  Game.findById(req.params.gameid).then(game => {    
     Player.findById(req.params.playerid).then(player => {
       Team.findAmongIdsByPlayerId(game.data.teams, player._id).then(team => {
         Team.findById(req.params.otherteamid).then((otherteam) => {
           GameLog.findById(team.data.log).then(gameLog => {
             const teamTurnsLog = gameLog.data.teams.find(teamLog => teamLog.teamId == otherteam._id.toString()).turns;
-            res.render('play_playerid_gameid_otherteamid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, team: team, otherteam: otherteam});
+            const wordHints = LogWordFilter.filterLogsToWords(teamTurnsLog, game.data.numWords)
+            res.render('play_playerid_gameid_otherteamid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, team: team, otherteam: otherteam, wordHints: wordHints});
           });
         }); 
       });

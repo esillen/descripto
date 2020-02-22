@@ -82,3 +82,13 @@ div.log-guess-number {
   font-weight: bold;
   color: black;
 }
+
+div.wordhints {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+div.wordhint-column {
+  
+}
