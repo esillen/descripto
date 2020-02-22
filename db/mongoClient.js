@@ -6,7 +6,7 @@ var client = {};
 MongoClient.connect(url, function(err, database) {
   if (err) throw err;
   console.log("Connected to mongoDB database!");
-  client.databaseObject = database.db("mydb");
+  client.databaseObject = database.db(process.env.MONGODB_DESCRIPTO_DATABASE);
 });
 
 client.insertOne = function(collectionName, data) {
