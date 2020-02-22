@@ -41,7 +41,7 @@ block content
         div.log-hints
           div.log-hint hints:
           each hint, hintIndex in turnLog.hints
-            div.log-hint #{hintIndex}. #{hint}
+            div.log-hint #{hintIndex + 1}. #{hint}
         div.log-guesses
           div(class=turnLog.guess == turnLog.correct ? "log-guess-correct" : "log-guess-wrong")
             div.log-guess-number ?
