@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
-var url = "mongodb://localhost:27017/mydb";
+var url = process.env.MONGODB_URI;
 var client = {};
 
 MongoClient.connect(url, function(err, database) {
