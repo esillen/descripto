@@ -105,7 +105,7 @@ Game.prototype.getThingsLeftToDo = function(teams) {
       thingsLeftToDo[team._id.toString()] = `${team.data.name} has not submitted any hints!`
     } else {
       for (otherTeam of teams) {
-        if (!team.guesses[otherTeam._id.toString()]) {
+        if (!team.data.guesses[otherTeam._id.toString()]) {
           thingsLeftToDo[team._id.toString()] = `${team.data.name} has not guessed the code of ${otherTeam.data.name}!`
         }
       }

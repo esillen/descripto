@@ -23,7 +23,7 @@ router.get('/:playerid', function(req, res, next) {
         getGameDisplayDataPromises.push(currentGame.getGameDisplayData());
       }
       Promise.all(getGameDisplayDataPromises).then(gameDisplayDatas => {
-        res.render('play_playerid', { title: 'DESCRIPTO', gameDisplayDatas: gameDisplayDatas, playerid: req.params.playerid});
+        res.render('play_playerid', { title: 'DESCRIPTO', gameDisplayDatas: gameDisplayDatas, player: player});
       });
     });
   });

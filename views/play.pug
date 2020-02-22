@@ -2,8 +2,9 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  h2 Welcome to #{title}!
   
+  h2 Please select your user to continue.
   ul
     each player in players
       li: a(href="/play/" + player._id) #{player.data.name}

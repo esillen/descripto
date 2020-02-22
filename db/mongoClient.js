@@ -54,7 +54,6 @@ client.findById = function(collectionName, id) {
       if (error) {
         reject(error);
       }
-      console.log("found something!")
       resolve(result);
     });
   });

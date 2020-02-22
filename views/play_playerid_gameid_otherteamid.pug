@@ -20,7 +20,7 @@ block content
   if otherteam.data.hints.length != 3
     p Waiting for hints
   else
-    ul
+    ol
       each hint in otherteam.data.hints
         li: p #{hint}
     if !team.data.guesses[otherteam._id.toString()] || team.data.guesses[otherteam._id.toString()].length == 0
