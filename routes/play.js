@@ -29,20 +29,20 @@ router.get('/:playerid', function(req, res, next) {
   });
 });
 
+// TODO: can probably reduce the fetches here by adding team to route.
 router.get('/:playerid/:gameid', function(req, res, next) {
   Game.findById(req.params.gameid).then(game => {
     Player.findById(req.params.playerid).then(player => {
       Team.findAmongIdsByPlayerId(game.data.teams, player._id).then(team => {
         GameLog.findById(team.data.log).then(gameLog => {
-          const otherTeamPromises = [];
-          for (const otherTeamId of game.data.teams) {
-            if (otherTeamId != team._id) {
-              otherTeamPromises.push(Team.findById(otherTeamId));
-            }
+          const getTeamPromises = [];
+          for (const teamId of game.data.teams) {
+            getTeamPromises.push(Team.findById(teamId));
           }
-          Promise.all(otherTeamPromises).then((otherTeams) => {
+          Promise.all(getTeamPromises).then((allTeams) => {
+            const otherTeams = allTeams.filter(aTeam => aTeam._id.toString() != team._id.toString())
             const teamTurnsLog = gameLog.data.teams.find(teamLog => teamLog.teamId == team._id.toString()).turns;
-            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, thingsLeftToDo: game.getThingsLeftToDo(otherTeams), team: team, otherTeams: otherTeams});
+            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, thingsLeftToDo: game.getThingsLeftToDo(allTeams), team: team, otherTeams: otherTeams});
           });
         }); 
       });
@@ -50,6 +50,7 @@ router.get('/:playerid/:gameid', function(req, res, next) {
   });
 });
 
+// TODO: can probably reduce the fetches here by adding own team to route.
 router.get('/:playerid/:gameid/:otherteamid', function(req, res, next) {
   Game.findById(req.params.gameid).then(game => {
     Player.findById(req.params.playerid).then(player => {
