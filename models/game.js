@@ -119,13 +119,13 @@ Game.prototype.updateScores = function(teams) {
   for(const team of teams) {
     // Give fail scores
     const teamCode = team.data.code;
-    if (team.data.guesses[team] != teamCode) {
+    if (team.data.guesses[team._id.toString()] != teamCode) {
       team.data.failPoints += 1;
     }
     // Give success-guess scores
     for (const otherTeam of teams) {
       if (otherTeam != team) {
-        if (otherTeam.data.guesses[team] == teamCode) {
+        if (otherTeam.data.guesses[team._id.toString()] == teamCode) {
           otherTeam.data.guessPoints += 1;
           team.data.otherGuessesPoints += 1;
         }

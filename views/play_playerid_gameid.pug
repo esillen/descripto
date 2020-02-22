@@ -63,20 +63,21 @@ block content
       each thingLeftToDo in thingsLeftToDo
         div.warning= thingLeftToDo
 
-  h2 LOG (? = guess, ! = correct)
-  each turnLog, turnIndex in teamTurnsLog
-    h3 turn #{turnIndex + 1}
-    div.log
-      div.log-hints
-        div.log-hint hints:
-        each hint, hintIndex in turnLog.hints
-          div.log-hint #{hintIndex}. #{hint}
-      div.log-guesses
-        div(class=turnLog.guess == turnLog.correct ? "log-guess-correct" : "log-guess-wrong")
-          div.log-guess-number ?
-          each guessNumber in turnLog.guess
-            div.log-guess-number= guessNumber
-        div(class="log-guess")
-          div.log-guess-number !
-          each correctNumber in turnLog.correct
-            div.log-guess-number= correctNumber
+  if teamTurnsLog.length > 0
+    h2 LOG (? = guess, ! = correct)
+    each turnLog, turnIndex in teamTurnsLog
+      h3 turn #{turnIndex + 1}
+      div.log
+        div.log-hints
+          div.log-hint hints:
+          each hint, hintIndex in turnLog.hints
+            div.log-hint #{hintIndex}. #{hint}
+        div.log-guesses
+          div(class=turnLog.guess == turnLog.correct ? "log-guess-correct" : "log-guess-wrong")
+            div.log-guess-number ?
+            each guessNumber in turnLog.guess
+              div.log-guess-number= guessNumber
+          div(class="log-guess")
+            div.log-guess-number !
+            each correctNumber in turnLog.correct
+              div.log-guess-number= correctNumber

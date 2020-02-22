@@ -59,6 +59,7 @@ div.log-guesses {
 div.log-guess {
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 
 div.log-guess-correct {
@@ -78,4 +79,6 @@ div.log-guess-number {
   border-radius: 2px;
   padding: 2px;
   margin: 2px;
+  font-weight: bold;
+  color: black;
 }
