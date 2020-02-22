@@ -12,8 +12,8 @@ block content
 
   h2 WORDS
   div.words
-    each word in otherteam.data.words
-      div.word ? 
+    each word, index in otherteam.data.words
+      div.word #{index + 1}. ? 
 
   h2 HINTS
 
