@@ -55,6 +55,11 @@ block content
       else
         p Submitted guess: #{team.data.guesses[team._id.toString()]}
 
+  if thingsLeftToDo
+    h2 THINGS LEFT BEFORE TURN END
+    each thingLeftToDo in thingsLeftToDo
+      p= thingLeftToDo
+
   h2 LOG
   each turnLog, turnIndex in teamTurnsLog
     h3 turn #{turnIndex + 1}

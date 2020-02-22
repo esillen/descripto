@@ -91,12 +91,30 @@ Game.prototype.getGameDisplayData = function() {
     }
     Promise.all(getTeamPromises).then(teams => {
       const teamNames = teams.map(team => team.data.name);
-      const gameDisplayData = {gameId: this._id, teamNames: teamNames}
+      const gameDisplayData = {gameId: this._id, teamNames: teamNames, turn: this.data.turn}
       resolve(gameDisplayData);
     });
   });
 }
 
+// TODO: perhaps move to another module
+Game.prototype.getThingsLeftToDo = function(teams) {
+  const thingsLeftToDo = {};
+  for(const team of teams) {
+    if (!team.data.hints || team.data.hints.length == 0) {
+      thingsLeftToDo[team._id.toString()] = `${team.data.name} has not submitted any hints!`
+    } else {
+      for (otherTeam of teams) {
+        if (!team.guesses[otherTeam._id.toString()]) {
+          thingsLeftToDo[team._id.toString()] = `${team.data.name} has not guessed the code of ${otherTeam.data.name}!`
+        }
+      }
+    }
+  }
+  return thingsLeftToDo;
+}
+
+// TODO: perhaps move to another module
 Game.prototype.updateScores = function(teams) {
   for(const team of teams) {
     // Give fail scores

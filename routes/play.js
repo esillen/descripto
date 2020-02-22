@@ -42,7 +42,7 @@ router.get('/:playerid/:gameid', function(req, res, next) {
           }
           Promise.all(otherTeamPromises).then((otherTeams) => {
             const teamTurnsLog = gameLog.data.teams.find(teamLog => teamLog.teamId == team._id.toString()).turns;
-            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, team: team, otherTeams: otherTeams});
+            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, thingsLeftToDo: game.getThingsLeftToDo(otherTeams), team: team, otherTeams: otherTeams});
           });
         }); 
       });
