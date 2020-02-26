@@ -4,6 +4,7 @@ var _ = require("lodash");
 var CodeGenerator = require("../util/codeGenerator");
 var Validator = require("../util/validator");
 var Team = require('./team');
+var Player = require('./player');
 var GameLog = require('./gameLog');
 
 
@@ -99,19 +100,31 @@ Game.prototype.getGameDisplayData = function() {
 
 // TODO: perhaps move to another module
 Game.prototype.getThingsLeftToDo = function(teams) {
-  const thingsLeftToDo = {};
-  for(const team of teams) {
-    if (!team.data.hints || team.data.hints.length == 0) {
-      thingsLeftToDo[team._id.toString()] = `${team.data.name} has not submitted any hints!`
-    } else {
+  return new Promise((resolve, reject) => {
+    const thingsLeftToDo = [];
+    const getPlayerPromises = [];
+    for(const team of teams) {
+      if (!team.data.hints || team.data.hints.length == 0) {
+        console.log(team.data.cryptographer);
+        getPlayerPromises.push(Player.findById(team.data.cryptographer));
+      } 
       for (otherTeam of teams) {
         if (!team.data.guesses[otherTeam._id.toString()]) {
-          thingsLeftToDo[team._id.toString()] = `${team.data.name} has not guessed the code of ${otherTeam.data.name}!`
+          if (team._id == otherTeam._id) {
+            thingsLeftToDo.push(`${team.data.name} has not guessed their own code!`);
+          } else {
+            thingsLeftToDo.push(`${team.data.name} has not guessed the code of ${otherTeam.data.name}!`);
+          }
         }
       }
     }
-  }
-  return thingsLeftToDo;
+    Promise.all(getPlayerPromises).then(players => {
+      for (const player of players) {
+        thingsLeftToDo.push(`${player.data.name} has not submitted any hints!`);
+      }
+      resolve(thingsLeftToDo)
+    });
+  });
 }
 
 // TODO: perhaps move to another module

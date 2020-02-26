@@ -41,10 +41,12 @@ router.get('/:playerid/:gameid', function(req, res, next) {
             getTeamPromises.push(Team.findById(teamId));
           }
           Promise.all(getTeamPromises).then((allTeams) => {
-            const otherTeams = allTeams.filter(aTeam => aTeam._id.toString() != team._id.toString())
-            const teamTurnsLog = gameLog.data.teams.find(teamLog => teamLog.teamId == team._id.toString()).turns;
-            const wordHints = LogWordFilter.filterLogsToWords(teamTurnsLog, game.data.numWords)
-            res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, thingsLeftToDo: game.getThingsLeftToDo(allTeams), team: team, otherTeams: otherTeams, wordHints: wordHints});
+            game.getThingsLeftToDo(allTeams).then(thingsLeftToDo => {
+              const otherTeams = allTeams.filter(aTeam => aTeam._id.toString() != team._id.toString())
+              const teamTurnsLog = gameLog.data.teams.find(teamLog => teamLog.teamId == team._id.toString()).turns;
+              const wordHints = LogWordFilter.filterLogsToWords(teamTurnsLog, game.data.numWords)
+              res.render('play_playerid_gameid', { title: 'DESCRIPTO', game: game, player: player, teamTurnsLog: teamTurnsLog, thingsLeftToDo: thingsLeftToDo, team: team, otherTeams: otherTeams, wordHints: wordHints});
+            });
           });
         }); 
       });
